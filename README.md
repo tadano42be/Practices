@@ -1,2 +1,2 @@
 # Practices
-Python practice
+practice
