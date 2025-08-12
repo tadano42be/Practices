@@ -1,120 +1,94 @@
-# Docker Commands List
-===================================================================================
+# Docker Command Reference Guide  
 
-> docker build [OPTIONS] PATH | URL | -
-> 
->>   -f [dockerfile]
->>   --force-rm=true
->>   --rm=true
->>   --no-cache
->>   --help
->>   -t SOURCE_IMAGE[:TAG]
+## Image Management  
+### Build Images  
+docker build [OPTIONS] PATH  
+-t name:tag → Tag the image  
+--no-cache → Ignore cache  
+-f Dockerfile → Specify alternate Dockerfile  
 
-docker search 
-  --filter is-official=true 
-            stars=100
-            is-official=true
-  --limit [number]
-  --no-trunc
-  --format "{{.Name}}: {{.Description}}"
-            "table {{.Name}}\t{{.IsAutomated}}\t{{.IsOfficial}}\t{{.Description}}\t{{.StarCount}}"
-  --help
+### Search Images  
+docker search [OPTIONS] TERM  
+--filter  
+--limit [number]  
 
-docker image pull
-  --help
+### List Images  
+docker image ls [OPTIONS]  
+--format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}\t{{.Size}}"  
+--filter  
 
-docker image ls [OPTIONS] [REPOSITORY[:TAG]]
-  --all
-  --no-trunc
-  --quiet
-  --digests
-  --filter reference='name*'
-            before='image_name'
-            since='image_name'
-            dangling=true
-            label='label'
-  --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}\t{{.Size}}\t{{.CreatedSince}}\t{{.CreatedAt}}\t{{.Digest}}"
-  --help
+### Remove Images  
+docker rmi IMAGE [IMAGE...]  
+-f → forced removal  
 
-docker tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG]
-          SOURCE_IMAGE_ID TARGET_IMAGE[:TAG]
-          # :latest will be used as default when no tag was specified
+## Container Operations  
+### Run Containers  
+docker run [OPTIONS] IMAGE [COMMAND]  
+-d → Detached mode  
+-p 80:80 → Port mapping  
+-v /host:/container → Volume mount  
+-e VAR=value → Set env vars  
 
-docker login
+### Container Management  
+docker start|stop|restart|kill CONTAINER  
 
-docker push [OPTIONS] [REGISTRY_HOST/][USERNAME/]REPOSITORY[:TAG]
-docker pull [OPTIONS] [REGISTRY_HOST/][USERNAME/]REPOSITORY[:TAG]
+### List Containers  
+docker ps [OPTIONS]  
+--filter "status=exited"  
+--filter "ancestor=[name]"  
 
-docker image inspect IMAGE_ID
-  --format='{{json .Config.Labels}}'
+## Registry Operations  
+### Authentication  
+docker login [SERVER]  
 
-docker inspect [OPTIONS] NAME|ID [NAME|ID...]
-  --format='{{.Config.Image}}' [NAME|ID]
-            '{{.Id}}' [NAME|ID]
-            '{{.LogPath}}' [NAME|ID]
-            '{{json .Config}}' [NAME|ID]
+### Push/Pull Images  
+docker pull IMAGE[:TAG]  
+docker push IMAGE[:TAG]  
 
-docker rmi [OPTIONS] IMAGE [IMAGE...]
-  -f IMAGE_ID
+### Tagging  
+docker tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG]  
 
-docker start [OPTIONS] CONTAINER [CONTAINER...]
-docker run [OPTIONS] IMAGE[:TAG] [COMMAND] [ARG...]
-  -it -d -p 5000:5000 -v ${PWD}:/app/code
+## Inspection & Logs  
+### Inspect Objects  
+docker inspect [OPTIONS] NAME|ID  
+Format Examples:  
+--format='{{.NetworkSettings.IPAddress}}'  
+--format='{{json .Config}}'  
 
-docker stop [OPTIONS] CONTAINER [CONTAINER...]
-docker kill [OPTIONS] CONTAINER [CONTAINER...]
+### View Logs
+docker logs [OPTIONS] CONTAINER  
+--tail 100 → Last N lines  
+-f → Follow logs  
+--since [time]
 
-docker ps [OPTIONS]
-  -a
-  -n 1
-  -q
-  -s
-  -l
-  --no-trunc
-  --filter label=""
-            'exited=0'
-            ancestor=''
-  --format json
-            "table {{.ID}}\t{{.Names}}"
-    
->> COMMON DOCKER CONTAINER EXIT CODES <<
-Exit Code 0	    Purposely stopped
-Exit Code 1	    Application error
-Exit Code 125	Container failed to run error
-Exit Code 126	Command invoke error
-Exit Code 127	File or directory not found
-Exit Code 128	Invalid argument used on exit
-Exit Code 134	Abnormal termination (SIGABRT)
-Exit Code 137	Immediate termination (SIGKILL)
-Exit Code 139	Segmentation fault (SIGSEGV)
-Exit Code 143	Graceful termination (SIGTERM)
-Exit Code 255	Exit Status Out Of Range
+## Cleanup Commands  
+### Prune Resources  
+docker image|container|volume|network prune [OPTIONS]  
+-a → Remove all unused  
+-f → Force removal  
+--filter  
 
-docker logs [OPTIONS] CONTAINER[NAME|ID]
-  --tail [number]
-  -f
-  --details
-  --since [timestamp]
-  --until [timestamp]
-  # use number (e.g. 60) for relative format
-  -t (or --timestamps)
+### Full System Cleanup  
+docker system prune -a --volumes  
 
-docker volume create
-  ls
-  inspect
-  rm
+## Exit Codes  
+Code | Description  
+0 | Normal termination  
+1 | Application error  
+125 | Docker run error  
+137 | SIGKILL (forced stop)  
+143 | SIGTERM (graceful shutdown)  
 
-docker image prune
-docker container prune
-docker volume prune
-  -a (--all)
-  -f (--force)
-  --filter
+## Formatting Reference  
+JSON Output  
+--format '{{json .}}'  
 
->> Key Filters <<
-until
-label
-status
+## Table Output  
+--format "table {{.ID}}\t{{.Names}}\t{{.Status}}"  
 
-docker system prune -a -f --volumes 
-# all unused resources
+## Filter Types  
+reference=name*  
+status=running|exited  
+before|since=timestamp  
+until=[time]  
+label=key=value  
