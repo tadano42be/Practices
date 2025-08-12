@@ -1,15 +1,14 @@
-Docker Commands List
+# Docker Commands List
 ===================================================================================
 
-docker build [OPTIONS] PATH | URL | -
-
-docker build
-  -f [dockerfile]
-  --force-rm=true
-  --rm=true
-  --no-cache
-  --help
-  -t SOURCE_IMAGE[:TAG]
+> docker build [OPTIONS] PATH | URL | -
+> 
+>>   -f [dockerfile]
+>>   --force-rm=true
+>>   --rm=true
+>>   --no-cache
+>>   --help
+>>   -t SOURCE_IMAGE[:TAG]
 
 docker search 
   --filter is-official=true 
